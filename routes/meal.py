@@ -40,7 +40,7 @@ def list_meals():
     meals = Meal.query.filter_by(user_id=current_user.id).all()
     return jsonify([meal.to_dict() for meal in meals]), 200
 
-@meal_bp.route('/', methods=['GET'])
+@meal_bp.route('/<int:meal_id>', methods=['GET'])
 @login_required
 def get_meal(meal_id):
     meal = Meal.query.filter_by(id=meal_id, user_id=current_user.id).first()
@@ -49,7 +49,7 @@ def get_meal(meal_id):
     
     return jsonify(meal.to_dict()), 200
 
-@meal_bp.route('/', methods=['PUT'])
+@meal_bp.route('/<int:meal_id>', methods=['PUT'])
 @login_required
 def update_meal(meal_id):
     meal = Meal.query.filter_by(id=meal_id, user_id=current_user.id).first()
@@ -67,7 +67,7 @@ def update_meal(meal_id):
     db.session.commit()
     return jsonify({"message": "Refeição atualizada com sucesso!", "meal": meal.to_dict()}), 200
 
-@meal_bp.route('/', methods=['DELETE'])
+@meal_bp.route('/<int:meal_id>', methods=['DELETE'])
 @login_required
 def delete_meal(meal_id):
     meal = Meal.query.filter_by(id=meal_id, user_id=current_user.id).first()

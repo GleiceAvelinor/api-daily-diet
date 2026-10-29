@@ -1,3 +1,5 @@
+-- Active: 1785312314710@@127.0.0.1@3306
+-- Active: 1785312314710@@127.0.0.1@3306
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
@@ -19,7 +21,6 @@ def register():
     if user_exists:
         return jsonify({"message": "Usuário já existe"}), 400
 
-    # Criptografia da senha antes de salvar no banco
     hashed_password = generate_password_hash(password)
     new_user = User(username=username, password=hashed_password)
     

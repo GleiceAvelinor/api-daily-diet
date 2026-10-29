@@ -1,11 +1,3 @@
-Uma documentação clara e bem estruturada é um dos pilares da engenharia de software profissional. Ela permite que novos desenvolvedores (ou você mesma no futuro!) entendam rapidamente a arquitetura, como rodar a aplicação localmente e como consumir os endpoints da API.
-
-Geralmente, essa documentação vive no arquivo **`README.md`** na raiz do repositório.
-
-Abaixo está o **`README.md`** completo e detalhado para o projeto **Daily Diet API**:
-
----
-
 # 🥗 Daily Diet API
 
 Uma API RESTful desenvolvida em **Python** com **Flask** para gerenciamento e controle de dieta diária. A aplicação permite registrar refeições, listar historico, atualizar e deletar registros, garantindo controle de acesso e isolamento de dados por usuário.
@@ -31,7 +23,7 @@ daily_diet/
 ├── requirements.txt         # Dependências do projeto
 ├── database.py              # Instância global do SQLAlchemy
 ├── app.py                   # Ponto de entrada e configuração do Flask
-├── instance/                # Gerenciado pelo Flask (não vai para o Git)
+├── instance/                # Gerenciado pelo Flask 
 │   └── daily_diet.db        # Banco de dados SQLite
 ├── models/                  # Camada de Dados (ORM)
 │   ├── __init__.py

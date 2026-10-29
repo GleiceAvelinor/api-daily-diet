@@ -7,8 +7,6 @@ class Meal(db.Model):
     description = db.Column(db.Text, nullable=True)
     date_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     is_in_diet = db.Column(db.Boolean, nullable=False)
-    
-    # Chave Estrangeira ligando a refeição ao usuário
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def to_dict(self):
