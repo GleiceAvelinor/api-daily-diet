@@ -36,9 +36,26 @@ def create_meal():
 @meal_bp.route('', methods=['GET'])
 @login_required
 def list_meals():
-    # Lista APENAS as refeições do usuário autenticado
     meals = Meal.query.filter_by(user_id=current_user.id).all()
     return jsonify([meal.to_dict() for meal in meals]), 200
+
+@meal_bp.route('/metrics', methods=['GET'])
+@login_required
+def get_metrics():
+    user_meals = Meal.query.filter_by(user_id=current_user.id).all()
+    
+    total_meals = len(user_meals)
+    in_diet_count = sum(1 for meal in user_meals if meal.is_in_diet)
+    out_diet_count = total_meals - in_diet_count
+    
+    metrics = {
+        "total_meals": total_meals,
+        "in_diet_count": in_diet_count,
+        "out_diet_count": out_diet_count,
+        "adherence_percentage": (in_diet_count / total_meals * 100) if total_meals > 0 else 0
+    }
+    
+    return jsonify(metrics), 200
 
 @meal_bp.route('/<int:meal_id>', methods=['GET'])
 @login_required
