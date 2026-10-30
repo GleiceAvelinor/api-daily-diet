@@ -1,4 +1,3 @@
-
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
@@ -9,6 +8,33 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
+    """
+    Registar um novo utilizador
+    ---
+    tags:
+      - Autenticação
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+            - username
+            - password
+          properties:
+            username:
+              type: string
+              example: gleice_avelino
+            password:
+              type: string
+              example: senhaSegura123
+    responses:
+      201:
+        description: Utilizador registado com sucesso
+      400:
+        description: Utilizador já existe ou campos em falta
+    """
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
@@ -30,6 +56,33 @@ def register():
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
+    """
+    Autenticar o utilizador e iniciar sessão
+    ---
+    tags:
+      - Autenticação
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+            - username
+            - password
+          properties:
+            username:
+              type: string
+              example: gleice_avelino
+            password:
+              type: string
+              example: senhaSegura123
+    responses:
+      200:
+        description: Login realizado com sucesso
+      401:
+        description: Credenciais inválidas
+    """
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
@@ -45,5 +98,16 @@ def login():
 @auth_bp.route('/logout', methods=['POST'])
 @login_required
 def logout():
+    """
+    Terminar a sessão do utilizador autenticado
+    ---
+    tags:
+      - Autenticação
+    responses:
+      200:
+        description: Logout realizado com sucesso
+      401:
+        description: Utilizador não autenticado
+    """
     logout_user()
     return jsonify({"message": "Logout realizado com sucesso!"}), 200
