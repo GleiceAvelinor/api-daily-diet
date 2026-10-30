@@ -6,12 +6,13 @@ Uma API RESTful desenvolvida em **Python** com **Flask** para gerenciamento e co
 
 ## 🛠️ Tecnologias Utilizadas
 
-* **[Python 3.10+](https://www.python.org/)**
-* **[Flask](https://flask.palletsprojects.com/)**: Microframework web para construção de APIs.
-* **[Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/)**: ORM para mapeamento de banco de dados relacional.
-* **[Flask-Login](https://flask-login.readthedocs.io/)**: Gerenciamento de sessões e autenticação de usuários.
-* **[SQLite](https://www.sqlite.org/)**: Banco de dados relacional (salvo localmente na pasta `instance/`).
-* **[Werkzeug](https://werkzeug.palletsprojects.com/)**: Utilitários para hashing seguro de senhas (`bcrypt`).
+- **[Python 3.10+](https://www.python.org/)**
+- **[Flask](https://flask.palletsprojects.com/)**: Microframework web para construção de APIs.
+- **[Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/)**: ORM para mapeamento de banco de dados relacional.
+- **[Flask-Login](https://flask-login.readthedocs.io/)**: Gerenciamento de sessões e autenticação de usuários.
+- **[Flasgger](https://github.com/flasgger/flasgger)**: Documentação interativa e OpenAPI/Swagger UI.
+- **[SQLite](https://www.sqlite.org/)**: Banco de dados relacional (salvo localmente na pasta `instance/`).
+- **[Werkzeug](https://werkzeug.palletsprojects.com/)**: Utilitários para hashing seguro de senhas.
 
 ---
 
@@ -22,7 +23,7 @@ daily_diet/
 ├── .gitignore               # Arquivos ignorados pelo Git (venv, instance, caches)
 ├── requirements.txt         # Dependências do projeto
 ├── database.py              # Instância global do SQLAlchemy
-├── app.py                   # Ponto de entrada e configuração do Flask
+├── app.py                   # Ponto de entrada, Swagger e configuração do Flask
 ├── instance/                # Gerenciado pelo Flask 
 │   └── daily_diet.db        # Banco de dados SQLite
 ├── models/                  # Camada de Dados (ORM)
@@ -31,8 +32,8 @@ daily_diet/
 │   └── meal.py              # Modelo de Refeição
 └── routes/                  # Camada de Controladores / Rotas (Blueprints)
     ├── __init__.py
-    ├── auth.py              # Rotas de cadastro e login
-    └── meal.py              # Rotas do CRUD e métricas de refeições
+    ├── auth.py              # Rotas de cadastro e login (com Swagger docstrings)
+    └── meal.py              # Rotas do CRUD e métricas (com Swagger docstrings)
 ```
 
 ---
@@ -41,8 +42,8 @@ daily_diet/
 
 ### Pré-requisitos
 
-* Python 3.10 ou superior instalado.
-* Git instalado.
+- Python 3.10 ou superior instalado.
+- Git instalado.
 
 ### Passo a Passo
 
@@ -53,13 +54,13 @@ cd daily-diet
 ```
 
 2. **Criar e ativar o Ambiente Virtual (`venv`):**
-* **Linux/macOS:**
+- **Linux/macOS:**
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-* **Windows (PowerShell):**
+- **Windows (PowerShell):**
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
@@ -79,11 +80,21 @@ A API estará rodando em: `http://127.0.0.1:5000`
 
 ---
 
+## 📚 Documentação Interativa (Swagger UI)
+
+A API conta com documentação interativa gerada via **Flasgger**. Com a aplicação rodando, acesse no seu navegador:
+
+👉 **`http://127.0.0.1:5000/apidocs/`**
+
+Pela interface do Swagger é possível visualizar todos os schemas, parâmetros aceitos, modelos de resposta e testar diretamente as requisições de Autenticação e Refeições.
+
+---
+
 ## 🔐 Autenticação e Segurança
 
-* **Segurança de Senhas:** As senhas são criptografadas com `generate_password_hash` da Werkzeug antes de serem persistidas no banco.
-* **Controle de Acesso:** Todas as rotas de `/api/meals` são protegidas com a anotação `@login_required`.
-* **Isolamento de Dados (Anti-IDOR):** As consultas de leitura, atualização, deleção e métricas garantem que o registro pertença ao `current_user.id`.
+- **Segurança de Senhas:** As senhas são criptografadas com `generate_password_hash` da Werkzeug antes de serem persistidas no banco.
+- **Controle de Acesso:** Todas as rotas de `/api/meals` são protegidas com a anotação `@login_required`.
+- **Isolamento de Dados (Anti-IDOR):** As consultas de leitura, atualização, deleção e métricas garantem que o registro pertença ao `current_user.id`.
 
 ---
 
@@ -93,9 +104,9 @@ A API estará rodando em: `http://127.0.0.1:5000`
 
 #### 1. Criar Usuário
 
-* **URL:** `/api/auth/register`
-* **Método:** `POST`
-* **Corpo da Requisição (`JSON`):**
+- **URL:** `/api/auth/register`
+- **Método:** `POST`
+- **Corpo da Requisição (`JSON`):**
 ```json
 {
   "username": "maria",
@@ -103,15 +114,15 @@ A API estará rodando em: `http://127.0.0.1:5000`
 }
 ```
 
-* **Respostas:**
+- **Respostas:**
   * `201 Created`: Usuário cadastrado com sucesso.
   * `400 Bad Request`: Usuário já existe ou campos ausentes.
 
 #### 2. Realizar Login
 
-* **URL:** `/api/auth/login`
-* **Método:** `POST`
-* **Corpo da Requisição (`JSON`):**
+- **URL:** `/api/auth/login`
+- **Método:** `POST`
+- **Corpo da Requisição (`JSON`):**
 ```json
 {
   "username": "maria",
@@ -119,16 +130,16 @@ A API estará rodando em: `http://127.0.0.1:5000`
 }
 ```
 
-* **Respostas:**
+- **Respostas:**
   * `200 OK`: Login realizado com sucesso (Sessão iniciada em Cookie).
   * `401 Unauthorized`: Credenciais inválidas.
 
 #### 3. Realizar Logout
 
-* **URL:** `/api/auth/logout`
-* **Método:** `POST`
-* **Requer Autenticação:** Sim (`@login_required`)
-* **Respostas:**
+- **URL:** `/api/auth/logout`
+- **Método:** `POST`
+- **Requer Autenticação:** Sim (`@login_required`)
+- **Respostas:**
   * `200 OK`: Sessão encerrada.
 
 ---
@@ -137,10 +148,10 @@ A API estará rodando em: `http://127.0.0.1:5000`
 
 #### 1. Registrar Refeição
 
-* **URL:** `/api/meals`
-* **Método:** `POST`
-* **Requer Autenticação:** Sim
-* **Corpo da Requisição (`JSON`):**
+- **URL:** `/api/meals`
+- **Método:** `POST`
+- **Requer Autenticação:** Sim
+- **Corpo da Requisição (`JSON`):**
 ```json
 {
   "name": "Almoço Balanceado",
@@ -150,24 +161,24 @@ A API estará rodando em: `http://127.0.0.1:5000`
 }
 ```
 
-* **Respostas:**
+- **Respostas:**
   * `201 Created`: Refeição registrada.
   * `400 Bad Request`: Campos obrigatórios ausentes.
 
 #### 2. Listar Refeições do Usuário
 
-* **URL:** `/api/meals`
-* **Método:** `GET`
-* **Requer Autenticação:** Sim
-* **Respostas:**
+- **URL:** `/api/meals`
+- **Método:** `GET`
+- **Requer Autenticação:** Sim
+- **Respostas:**
   * `200 OK`: Retorna a lista de refeições pertencentes ao usuário logado.
 
 #### 3. Obter Métricas e Estatísticas (Dashboard)
 
-* **URL:** `/api/meals/metrics`
-* **Método:** `GET`
-* **Requer Autenticação:** Sim
-* **Respostas:**
+- **URL:** `/api/meals/metrics`
+- **Método:** `GET`
+- **Requer Autenticação:** Sim
+- **Respostas:**
   * `200 OK`: Retorna as estatísticas agregadas do usuário logado.
 ```json
 {
@@ -180,19 +191,19 @@ A API estará rodando em: `http://127.0.0.1:5000`
 
 #### 4. Visualizar Refeição Específica
 
-* **URL:** `/api/meals/<id>`
-* **Método:** `GET`
-* **Requer Autenticação:** Sim
-* **Respostas:**
+- **URL:** `/api/meals/<id>`
+- **Método:** `GET`
+- **Requer Autenticação:** Sim
+- **Respostas:**
   * `200 OK`: Retorna os detalhes da refeição.
   * `404 Not Found`: Refeição não existe ou não pertence ao usuário.
 
 #### 5. Atualizar Refeição
 
-* **URL:** `/api/meals/<id>`
-* **Método:** `PUT`
-* **Requer Autenticação:** Sim
-* **Corpo da Requisição (`JSON`):**
+- **URL:** `/api/meals/<id>`
+- **Método:** `PUT`
+- **Requer Autenticação:** Sim
+- **Corpo da Requisição (`JSON`):**
 ```json
 {
   "name": "Almoço Ajustado",
@@ -201,15 +212,15 @@ A API estará rodando em: `http://127.0.0.1:5000`
 }
 ```
 
-* **Respostas:**
+- **Respostas:**
   * `200 OK`: Refeição atualizada.
   * `404 Not Found`: Refeição não encontrada.
 
 #### 6. Deletar Refeição
 
-* **URL:** `/api/meals/<id>`
-* **Método:** `DELETE`
-* **Requer Autenticação:** Sim
-* **Respostas:**
+- **URL:** `/api/meals/<id>`
+- **Método:** `DELETE`
+- **Requer Autenticação:** Sim
+- **Respostas:**
   * `200 OK`: Refeição deletada.
   * `404 Not Found`: Refeição não encontrada.
